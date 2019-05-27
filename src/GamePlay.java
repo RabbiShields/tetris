@@ -9,14 +9,10 @@ import java.util.Random;
 public class GamePlay extends JPanel implements KeyListener, ActionListener {
 
     private Timer timer;
-
-    //turns off all shapes
-    int numBlocks = 4;
-    private boolean lShape = true;
-    private boolean tShape = false;
-    private boolean boxShape = false;
-    private boolean lineShape = false;
-
+    private int i = 0;
+    private int j = 0;
+    private Grid grid = new Grid();
+    private boolean[][] gridCoOr = grid.getGrid();
 
     GamePlay() {
         addKeyListener(this);
@@ -25,22 +21,41 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         int delay = 10;
         timer = new Timer(delay, this);
         timer.start();
+
     }
 
-    public void paint(Graphics g) {
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
         //background
         g.setColor(Color.black);
-        g.fillRect(0, 0, 700, 800);
+        g.fillRect(1, 1, 700, 800);
 
         Random r = new Random();
         int which = r.nextInt(3);
+        ////switch between diffrent shapes
+        switch (which) {
+            case 1:
+            case 2:
+            case 3:
+        }
 
-        g.setColor(Color.yellow);
-        g.draw3DRect(25,25,20,20, true);
+
+        for (i = 0; i < gridCoOr.length; i++) {
+            for (j = 0; j < gridCoOr[i].length; j++) {
+                if (gridCoOr[i][j]) {
+                    g.setColor(Color.white);
+                    g.fillRect(i * 20, j * 20, 20, 20);
+                }
+            }
+        }
+
 
         g.dispose();
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -48,27 +63,17 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getExtendedKeyCode() == KeyEvent.VK_UP) {
-        }
-        if (e.getExtendedKeyCode() == KeyEvent.VK_DOWN) {
-        }
-        //if (e.getExtendedKeyCode() == KeyEvent.VK_RIGHT) {moveRight()}
-        //if (e.getExtendedKeyCode() == KeyEvent.VK_LEFT){moveRight();}
-    }
-    // private int moveRight(){
-    //     return ;
-    // }
-    //  private int moveRight(){
-    //     return ;
-    //  }
+    public void keyTyped(KeyEvent e) {
 
+    }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
+
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+
     }
 }
