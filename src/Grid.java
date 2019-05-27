@@ -1,20 +1,14 @@
 public class Grid {
-    private int height;
-    private int width;
-    private boolean[][] grid = new boolean[30][30];
+    private boolean[][] grid;
 
-    public Grid() {
-        this.height = 20;
-        this.width = 20;
+    Grid() {
+        grid = new boolean[30][30];
     }
+
 
     boolean[][] getGrid() {
         return grid;
     }
 
-    public Grid(int height, int width) {
-        this.height = height;
-        this.width = width;
-    }
 
 }

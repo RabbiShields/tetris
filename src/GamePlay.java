@@ -35,7 +35,6 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
 
         Random r = new Random();
         int which = r.nextInt(3);
-        ////switch between diffrent shapes
         switch (which) {
             case 1:
             case 2:
@@ -69,7 +68,11 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        boolean[][] gridCoOr = grid.getGrid();
+        Blocks block = new Blocks();
+        if (e.getExtendedKeyCode() == KeyEvent.VK_UP) {
+            block.addABlock(gridCoOr);
+        }
     }
 
     @Override
