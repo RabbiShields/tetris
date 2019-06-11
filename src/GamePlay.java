@@ -12,16 +12,15 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
     private int i = 0;
     private int j = 0;
     private Grid grid = new Grid();
-    private boolean[][] gridCoOr = grid.getGrid();
+    private int[][] gridCoOr = grid.getGrid();
 
     GamePlay() {
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        int delay = 10;
+        int delay = 80;
         timer = new Timer(delay, this);
         timer.start();
-
     }
 
 
@@ -41,37 +40,39 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
             case 3:
         }
 
-
+        gridCoOr = grid.getGrid();
         for (i = 0; i < gridCoOr.length; i++) {
             for (j = 0; j < gridCoOr[i].length; j++) {
-                if (gridCoOr[i][j]) {
+                if (gridCoOr[i][j] != 1 && gridCoOr[i][j] != 0) gridCoOr[i][j]
+                        = 0;
+                if (gridCoOr[i][j] == 1) {
                     g.setColor(Color.white);
                     g.fillRect(i * 20, j * 20, 20, 20);
                 }
             }
         }
 
-
         g.dispose();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        timer.start();
+        grid.shiftAllBlocksDown();
         repaint();
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        boolean[][] gridCoOr = grid.getGrid();
+        int[][] gridCoOr = grid.getGrid(); //fetches grid coordinates
         Blocks block = new Blocks();
         if (e.getExtendedKeyCode() == KeyEvent.VK_UP) {
-            block.addABlock(gridCoOr);
+            gridCoOr = grid.addABlock(gridCoOr);
+            grid.setGrid(gridCoOr); // stores the coordinates again
         }
     }
 
