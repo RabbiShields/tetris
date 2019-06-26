@@ -1,18 +1,29 @@
+import java.util.Random;
+
 public class Blocks {
-    private int xPos = 0;
-    private int yPos = 0;
+    private int[][] lBlock = {{0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 1
+            , 1, 0}};
+    private int[][] dotBlock = {{0, 0, 0, 0}, {0, 0, 0, 0}, {1, 0, 0, 0}, {0, 0
+            , 0, 0}};
 
     public Blocks() {
     }
 
-    public void setxPos(int xPos) {
-        this.xPos = xPos;
+    public int[][] generateAblock() {
+        int[][] newBlock = new int[5][5];
+        Random r = new Random();
+        int which = r.nextInt(2)+1;
+        System.out.print(which+"number");
+        switch (which) {
+            case 1:
+                newBlock = lBlock;
+                break;
+            case 2:
+                newBlock = dotBlock;
+                break;
+        }
+        return newBlock;
     }
-
-    public void setyPos(int yPos) {
-        this.yPos = yPos;
-    }
-
 
 
     public void arrayInitializer(int[][] grid) {
@@ -24,11 +35,6 @@ public class Blocks {
     }
 
     public void rotateAblock(int[][] grid) {
-
-
-        int[][] newGrid = new int[30][30];
-
+        int[][] newGrid = new int[30][40];
     }
-
-
 }
