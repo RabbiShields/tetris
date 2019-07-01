@@ -5,15 +5,17 @@ public class Blocks {
             , 1, 0}};
     private int[][] dotBlock = {{0, 0, 0, 0}, {0, 0, 0, 0}, {1, 0, 0, 0}, {0, 0
             , 0, 0}};
+    private int[][] squareBlock = {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0},
+            {0, 0, 0, 0}};
 
-    public Blocks() {
-    }
+    public Blocks() {}
 
     public int[][] generateAblock() {
         int[][] newBlock = new int[5][5];
         Random r = new Random();
-        int which = r.nextInt(2)+1;
-        System.out.print(which+"number");
+        int which = r.nextInt(3) + 1;
+        System.out.println(" ");
+        System.out.print(which + "number");
         switch (which) {
             case 1:
                 newBlock = lBlock;
@@ -21,17 +23,11 @@ public class Blocks {
             case 2:
                 newBlock = dotBlock;
                 break;
+            case 3:
+                newBlock = squareBlock;
+                break;
         }
         return newBlock;
-    }
-
-
-    public void arrayInitializer(int[][] grid) {
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                grid[i][j] = 0;
-            }
-        }
     }
 
     public void rotateAblock(int[][] grid) {

@@ -30,34 +30,8 @@ public class Grid {
         blockGrid = block.generateAblock();
     }
 
-
-    public void shiftAllBlocksDown() {
-
-    }
-
-
-    private void coilitionDetection() {
-        for (int i = xPos; i < xPos + 4; i++) {
-            for (int j = yPos; j < yPos + 4; j++) {
-                System.out.println(j + "j");
-                System.out.println(i + "i");
-                if (blockGrid[i - xPos][j - yPos] == 1 && j > 25) {
-                    colide = true;
-                    yPos--;
-                    blockIsDoneFalling();
-
-                }
-                if (frozenPeicesGrid[i][j] == 1 && blockGrid[i - xPos][j - yPos] == 1) {
-                    colide = true;
-                    yPos--;
-                    blockIsDoneFalling();
-
-                }
-            }
-        }
-    }
-
     private void blockIsDoneFalling() {
+        colide = false;
         for (int i = xPos; i < xPos + 4; i++) {
             for (int j = yPos; j < yPos + 4; j++) {
                 if (blockGrid[i - xPos][j - yPos] == 1) {
@@ -69,7 +43,6 @@ public class Grid {
         xPos = 10;
         yPos = 2;
         blockGrid = block.generateAblock();
-        colide = false;
     }
 
 
@@ -81,27 +54,77 @@ public class Grid {
         }
         for (int i = xPos; i < xPos + 4; i++) {
             for (int j = yPos; j < yPos + 4; j++)
-                grid[i][j] = blockGrid[i - xPos][j - yPos];
+                if (blockGrid[i - xPos][j - yPos] == 1) grid[i][j] =
+                        blockGrid[i - xPos][j - yPos];
         }
     }
 
     public void move(int xMove, int yMove) {
-        if (1 < xPos && 23 > xPos) xPos += xMove;
-        if (!colide) yPos += yMove;
-        coilitionDetection();
         colide = false;
-        yPos++;
+        System.out.println("(x" + xPos + "," + yPos + ")");
+        for (int i = xPos; i < xPos + 4; i++) {
+            for (int j = yPos; j < yPos + 4; j++) {
+                System.out.print("(" + i + "," + j + ")");
+                if (frozenPeicesGrid[i][j + 1] == 1 & blockGrid[i - xPos][j - yPos] == 1) {
+                    colide = true;
+                    blockIsDoneFalling();
+                    break;
+                }
+                if (xMove == 1) {
+                    if (blockGrid[i - xPos][j - yPos] == 1 & i > 24) colide =
+                            true;
+                }
+                if (xMove == -1) {
+                    if (blockGrid[i - xPos][j - yPos] == 1 & i < 6) colide =
+                            true;
+                }
 
-        coilitionDetection();
+                if (yMove == 1) {
+                    if (blockGrid[i - xPos][j - yPos] == 1 & j > 25) {
+                        colide = true;
+                        blockIsDoneFalling();
+                        break;
+                    }
+                }
+            }
+        }
         if (!colide) {
+            xPos += xMove;
+            yPos += yMove;
             mergeGrids();
         }
     }
-
 
     public int[][] getGrid() {
         return grid;
     }
 
-
+    public void pieceProjection() {
+        boolean projectionScanDone = false;
+        int tempYPos = yPos;
+        while (!projectionScanDone) {
+            a: for (int i = xPos; i < xPos + 4; i++) {
+                for (int j = tempYPos; j < tempYPos + 4; j++) {
+                    System.out.print("(i" + i + "," + j + ")");
+                    System.out.print(projectionScanDone);
+                    if (frozenPeicesGrid[i][j + 1] == 1 & blockGrid[i - xPos][j - tempYPos] == 1) {
+                        projectionScanDone = true;
+                        break a;
+                    }
+                    if (blockGrid[i - xPos][j - tempYPos] == 1 & j > 25) {
+                        projectionScanDone = true;
+                        break a;
+                    }
+                }
+            }
+            if  (!projectionScanDone)tempYPos++;
+        }
+        if (projectionScanDone) {
+            for (int i = xPos; i < xPos + 4; i++) {
+                for (int j = tempYPos; j < tempYPos + 4; j++) {
+                    if (blockGrid[i - xPos][j - tempYPos] == 1) grid[i][j] = blockGrid[i - xPos][j - tempYPos];
+                }
+            }
+        }
+    }
 }

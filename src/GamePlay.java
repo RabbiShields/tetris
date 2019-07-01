@@ -17,7 +17,7 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        int delay = 100;
+        int delay = 200;
         timer = new Timer(delay, this);
         timer.start();
     }
@@ -35,10 +35,10 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         for (int i = 0; i < gridCoOr.length; i++) {
             for (int j = 0; j < gridCoOr[i].length; j++) {
                 if (gridCoOr[i][j] != 1 && gridCoOr[i][j] != 0) gridCoOr[i][j]
-                        = 0; // turns all null into 0s
+                        = 0; // ^turns all null into 0s^
                 if (gridCoOr[i][j] == 1) {
                     g.setColor(Color.white);
-                    g.fillRect((i * 20)+3, (j * 20)+3, 14, 14);
+                    g.fillRect((i * 20) + 3, (j * 20) + 3, 14, 14);
                 }
             }
         }
@@ -49,36 +49,34 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         timer.start();
-        if(!blockInPlay) {
+        if (!blockInPlay) {
             grid.startGame();
             blockInPlay = true;
         }
-        grid.move(0,1);
+        grid.move(0, 1);
+        grid.pieceProjection();
         repaint();
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
+    public void keyTyped(KeyEvent e) { }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getExtendedKeyCode() == KeyEvent.VK_UP) {
-            grid.move(0,-1);
+            grid.move(0, -1);
         }
         if (e.getExtendedKeyCode() == KeyEvent.VK_RIGHT) {
-            grid.move(1,0);
+            grid.move(1, 0);
         }
         if (e.getExtendedKeyCode() == KeyEvent.VK_LEFT) {
-            grid.move(-1,0);
+            grid.move(-1, 0);
         }
         if (e.getExtendedKeyCode() == KeyEvent.VK_DOWN) {
-            grid.move(0,1);
+            grid.move(0, 1);
         }
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
+    public void keyReleased(KeyEvent e) { }
 }
