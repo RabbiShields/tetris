@@ -42,7 +42,7 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
                 }
                 if (gridCoOr[i][j] == 2) {
                     g.setColor(Color.blue);
-                    g.fillRect((i * 20) + 3, (j * 20) + 3, 14, 14);
+                    g.drawRoundRect((i * 20) + 3, (j * 20) + 3, 14, 14, 5,5);
                 }
             }
         }
@@ -59,6 +59,7 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         }
         grid.move(0, 1);
         grid.pieceProjection();
+        grid.completeLineCheck();
         repaint();
     }
 

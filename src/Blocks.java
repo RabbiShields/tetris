@@ -3,7 +3,7 @@ import java.util.Random;
 public class Blocks {
     private int[][] lBlock = {{0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 1
             , 1, 0}};
-    private int[][] dotBlock = {{0, 0, 0, 0}, {0, 0, 0, 0}, {1, 0, 0, 0}, {0, 0
+    private int[][] TBlock = {{0, 0, 1, 0}, {0, 1,1, 0}, {0, 0, 1, 0}, {0, 0
             , 0, 0}};
     private int[][] squareBlock = {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0},
             {0, 0, 0, 0}};
@@ -11,19 +11,19 @@ public class Blocks {
     public Blocks() {}
 
     public int[][] generateAblock() {
-        int[][] newBlock = new int[5][5];
+        int[][] newBlock = new int[4][4];
         Random r = new Random();
-        int which = r.nextInt(3) + 1;
+        int which = r.nextInt(3);
         System.out.println(" ");
         System.out.print(which + "number");
         switch (which) {
-            case 1:
+            case 0:
                 newBlock = lBlock;
                 break;
-            case 2:
-                newBlock = dotBlock;
+            case 1:
+                newBlock = TBlock;
                 break;
-            case 3:
+            case 2:
                 newBlock = squareBlock;
                 break;
         }
