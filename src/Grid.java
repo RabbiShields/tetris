@@ -23,7 +23,7 @@ public class Grid {
 
     void move(int xMove, int yMove) {
         colide = false;
-        System.out.println("(x" + xPos + "," + yPos + ")");
+        //System.out.println("(x" + xPos + "," + yPos + ")");
         a:
         for (int i = xPos; i < xPos + 4; i++) {
             for (int j = yPos; j < yPos + 4; j++) {
@@ -72,7 +72,9 @@ public class Grid {
     int[][] getGrid() {
         return grid;
     }
-
+//projects a where a falling piece will land
+    // makes a tempYPos and checks if that fake y position will cause a
+// collition keeps adding one to that Y Pos to see if it collides.
     void pieceProjection() {
         projectionScanDone = false;
         int tempYPos = yPos;
@@ -96,7 +98,7 @@ public class Grid {
         if (projectionScanDone) {
             for (int i = xPos; i < xPos + 4; i++) {
                 for (int j = tempYPos; j < tempYPos + 4; j++) {
-                    if (blockGrid[i - xPos][j - tempYPos] == 1) grid[i][j] = blockGrid[i - xPos][j - tempYPos];
+                    if (blockGrid[i - xPos][j - tempYPos] == 1) grid[i][j] = 2;
                 }
             }
         }
