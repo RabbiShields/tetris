@@ -6,7 +6,7 @@ public class Grid {
     private int[][] grid;
     private int[][] blockGrid;
     private boolean colide = false;
-    private int xPos = lBound + (lBound+rBound)/2;
+    private int xPos = (lBound+rBound)/2;
     private int yPos = 1;
 
 
@@ -119,7 +119,7 @@ public class Grid {
             }
         }
         Blocks block = new Blocks();
-        xPos = lBound + (lBound+rBound)/2;;
+        xPos = (lBound+rBound)/2;;
         yPos = 1;
         blockGrid = block.generateAblock();
     }
