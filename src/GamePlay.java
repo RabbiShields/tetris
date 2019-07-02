@@ -31,19 +31,30 @@ public class GamePlay extends JPanel implements KeyListener, ActionListener {
         g.setColor(Color.black);
         g.fillRect(1, 1, 700, 800);
 
+        for (int i = grid.lBound; i <= grid.rBound; i++) {
+            g.setColor(Color.white);
+            g.drawRoundRect((i * 30) + 3, (grid.floorBound * 30) + 3, 24, 24, 5
+                    ,5);
+        }
+
         gridCoOr = grid.getGrid();
         for (int i = 0; i < gridCoOr.length; i++) {
             for (int j = 0; j < gridCoOr[i].length; j++) {
                 if (gridCoOr[i][j] != 1 & gridCoOr[i][j] != 0 & gridCoOr[i][j] != 2) gridCoOr[i][j]
                         = 0; // ^turns all null into 0s^
-                if (gridCoOr[i][j] == 1) {
-                    g.setColor(Color.white);
-                    g.fillRect((i * 20) + 3, (j * 20) + 3, 14, 14);
-                }
+
                 if (gridCoOr[i][j] == 2) {
                     g.setColor(Color.blue);
-                    g.drawRoundRect((i * 20) + 3, (j * 20) + 3, 14, 14, 5,5);
+                    g.drawRoundRect((i * 30) + 3, (j * 30) + 3, 24, 24, 5,5);
                 }
+                if (gridCoOr[i][j] == 1) {
+                    g.setColor(Color.white);
+                    g.fillRect((i * 30) + 3, (j * 30) + 3, 24, 24);
+                }
+
+
+
+
             }
         }
 

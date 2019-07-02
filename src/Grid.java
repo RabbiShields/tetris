@@ -1,21 +1,21 @@
 public class Grid {
-    private int[][] frozenPeicesGrid;
+    int lBound = 5;
+    int rBound = 13;
+    int floorBound = 21;
+    private int[][] frozenPiecesGrid;
     private int[][] grid;
-
     private int[][] blockGrid;
     private boolean colide = false;
-    private int lBound = 10;
-    private int rBound = 18;
-    private int floorBound = 25;
-    private int xPos = lBound;
-    private int yPos = 2;
+    private int xPos = lBound + (lBound+rBound)/2;
+    private int yPos = 1;
+
 
     Grid() {
         grid = new int[30][35];
-        frozenPeicesGrid = new int[30][35];
+        frozenPiecesGrid = new int[30][35];
         blockGrid = new int[5][5];
         arrayInitializer(grid);
-        arrayInitializer(frozenPeicesGrid);
+        arrayInitializer(frozenPiecesGrid);
         arrayInitializer(blockGrid);
     }
 
@@ -32,7 +32,7 @@ public class Grid {
             for (int j = yPos; j < yPos + blockGrid.length; j++) {
                 //System.out.print("(" + i + "," + j + ")");
                 if (xMove == 1) {
-                    if (frozenPeicesGrid[i + xMove][j] == 1 & blockGrid[i - xPos][j - yPos] == 1) {
+                    if (frozenPiecesGrid[i + xMove][j] == 1 & blockGrid[i - xPos][j - yPos] == 1) {
                         colide = true;
                         break a;
                     }
@@ -42,7 +42,7 @@ public class Grid {
                     }
                 }
                 if (xMove == -1) {
-                    if (frozenPeicesGrid[i + xMove][j] == 1 & blockGrid[i - xPos][j - yPos] == 1) {
+                    if (frozenPiecesGrid[i + xMove][j] == 1 & blockGrid[i - xPos][j - yPos] == 1) {
                         colide = true;
                         break a;
                     }
@@ -58,7 +58,7 @@ public class Grid {
                         break a;
                     }
                 }
-                if (frozenPeicesGrid[i][j + 1] == 1 & blockGrid[i - xPos][j - yPos] == 1) {
+                if (frozenPiecesGrid[i][j + 1] == 1 & blockGrid[i - xPos][j - yPos] == 1) {
                     colide = true;
                     blockIsDoneFalling();
                     break a;
@@ -88,7 +88,7 @@ public class Grid {
                 for (int j = tempYPos; j < tempYPos + blockGrid.length; j++) {
                     //System.out.print("(i" + i + "," + j + ")");
                     //System.out.print(projectionScanDone);
-                    if (frozenPeicesGrid[i][j + 1] == 1 & blockGrid[i - xPos][j - tempYPos] == 1) {
+                    if (frozenPiecesGrid[i][j + 1] == 1 & blockGrid[i - xPos][j - tempYPos] == 1) {
                         projectionScanDone = true;
                         break b;
                     }
@@ -114,21 +114,20 @@ public class Grid {
         for (int i = xPos; i < xPos + blockGrid.length; i++) {
             for (int j = yPos; j < yPos + blockGrid.length; j++) {
                 if (blockGrid[i - xPos][j - yPos] == 1) {
-                    frozenPeicesGrid[i][j] = blockGrid[i - xPos][j - yPos];
+                    frozenPiecesGrid[i][j] = blockGrid[i - xPos][j - yPos];
                 }
             }
         }
         Blocks block = new Blocks();
-        xPos = lBound + 2 ;
-        yPos = 2;
+        xPos = lBound + (lBound+rBound)/2;;
+        yPos = 1;
         blockGrid = block.generateAblock();
     }
-
 
     private void mergeGrids() {
         for (int i = 0; i < grid.length - 1; i++) {
             for (int j = 0; j < grid[i].length - 1; j++) {
-                grid[i][j] = frozenPeicesGrid[i][j];
+                grid[i][j] = frozenPiecesGrid[i][j];
             }
         }
         for (int i = xPos; i < xPos + blockGrid.length; i++) {
@@ -144,25 +143,41 @@ public class Grid {
                 grid[i][j] = 0;
             }
         }
-
     }
 
     public void completeLineCheck() {
-        boolean lineComplete = true;
-        for (int i = lBound; i < rBound; i++) {
-            if (frozenPeicesGrid[floorBound][i] == 0) {
-                lineComplete = false;
-                break;
+        for (int j = 25; j > 3; j--) {
+            boolean lineComplete = true;
+            for (int i = lBound; i <= rBound; i++) {
+                if (frozenPiecesGrid[i][j] == 0) {
+                    lineComplete = false;
+                }
             }
-        }
-        if (lineComplete) {
-            removeLine();
+            if (lineComplete) {
+                removeLine(j);
+            }
         }
     }
 
-    private void removeLine() {
-        for (int i = lBound; i < rBound; i++) {
-            frozenPeicesGrid[floorBound][i] = 0;
+    private void removeLine(int completedLineAt) {
+        //removes completed line
+        for (int i = lBound; i <= rBound; i++) {
+            frozenPiecesGrid[i][completedLineAt] = 0;
+        }
+
+        try {
+            Thread.sleep(700);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //moves all blocks down
+
+        for (int i = lBound; i <= rBound; i++){
+            for (int j = completedLineAt; j > 3; j--){
+                frozenPiecesGrid[i][j] = frozenPiecesGrid[i][j - 1];
+                frozenPiecesGrid[i][j - 1] = 0;
+            }
         }
     }
 }
