@@ -6,14 +6,14 @@ public class Grid {
     private int[][] grid;
     private int[][] blockGrid;
     private boolean colide = false;
-    private int xPos = (lBound+rBound)/2;
-    private int yPos = 1;
+    private int xPos = (lBound + rBound) / 2;
+    private int yPos = 0;
 
 
     Grid() {
         grid = new int[30][35];
         frozenPiecesGrid = new int[30][35];
-        blockGrid = new int[5][5];
+        blockGrid = new int[4][4];
         arrayInitializer(grid);
         arrayInitializer(frozenPiecesGrid);
         arrayInitializer(blockGrid);
@@ -119,7 +119,8 @@ public class Grid {
             }
         }
         Blocks block = new Blocks();
-        xPos = (lBound+rBound)/2;;
+        xPos = (lBound + rBound) / 2;
+        ;
         yPos = 1;
         blockGrid = block.generateAblock();
     }
@@ -173,11 +174,64 @@ public class Grid {
 
         //moves all blocks down
 
-        for (int i = lBound; i <= rBound; i++){
-            for (int j = completedLineAt; j > 3; j--){
+        for (int i = lBound; i <= rBound; i++) {
+            for (int j = completedLineAt; j > 3; j--) {
                 frozenPiecesGrid[i][j] = frozenPiecesGrid[i][j - 1];
                 frozenPiecesGrid[i][j - 1] = 0;
             }
         }
     }
+
+
+    public void rotate() {
+        int[][] newPieceArray =
+                new int[blockGrid.length][blockGrid[0].length];
+        int columnForNew = blockGrid.length - 1;
+        int rowForNew = 0;
+        for (int[] ints : blockGrid) {
+            for (int anInt : ints) {
+                newPieceArray[rowForNew][columnForNew] = anInt;
+                rowForNew++;
+                if (rowForNew == blockGrid.length)
+                    rowForNew = 0;
+            }
+            columnForNew--;
+        }
+
+
+        colide = false;
+        boolean outOfBounds = true;
+        int tempX = xPos;
+        for (int k = 0; k < 8; k++) {
+            colide = false;
+            outOfBounds = false;
+            e:
+            for (int i = tempX; i < tempX + blockGrid.length; i++) {
+                for (int j = yPos; j < yPos + blockGrid.length; j++) {
+                    if (frozenPiecesGrid[i][j] == 1 & newPieceArray[i - tempX][j - yPos] == 1) {
+                        colide = true;
+                    }
+
+                    if (newPieceArray[i - tempX][j - yPos] == 1) {
+                        if (i > rBound) {
+                            outOfBounds = true;
+                            tempX--;
+                            break e;
+                        }
+                        if (i < lBound) {
+                            outOfBounds = true;
+                            tempX++;
+                            break e;
+                        }
+                    }
+                }
+            }
+            if (!outOfBounds & !colide) {
+                xPos = tempX;
+                break;
+            }
+        }
+        if (!colide) blockGrid = newPieceArray;
+    }
+
 }
