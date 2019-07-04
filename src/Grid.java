@@ -5,10 +5,9 @@ public class Grid {
     private int[][] frozenPiecesGrid;
     private int[][] grid;
     private int[][] blockGrid;
-    private boolean colide = false;
+    private boolean collide = false;
     private int xPos = (lBound + rBound) / 2;
     private int yPos = 0;
-
 
     Grid() {
         grid = new int[30][35];
@@ -25,47 +24,47 @@ public class Grid {
     }
 
     void move(int xMove, int yMove) {
-        colide = false;
+        collide = false;
         System.out.println("(x" + xPos + "," + yPos + ")");
         a:
         for (int i = xPos; i < xPos + blockGrid.length; i++) {
             for (int j = yPos; j < yPos + blockGrid.length; j++) {
                 //System.out.print("(" + i + "," + j + ")");
                 if (xMove == 1) {
-                    if (frozenPiecesGrid[i + xMove][j] == 1 & blockGrid[i - xPos][j - yPos] == 1) {
-                        colide = true;
+                    if (frozenPiecesGrid[i + xMove][j] != 0 & blockGrid[i - xPos][j - yPos] != 0) {
+                        collide = true;
                         break a;
                     }
-                    if (blockGrid[i - xPos][j - yPos] == 1 & i >= rBound) {
-                        colide = true;
+                    if (blockGrid[i - xPos][j - yPos] != 0 & i >= rBound) {
+                        collide = true;
                         break a;
                     }
                 }
                 if (xMove == -1) {
-                    if (frozenPiecesGrid[i + xMove][j] == 1 & blockGrid[i - xPos][j - yPos] == 1) {
-                        colide = true;
+                    if (frozenPiecesGrid[i + xMove][j] != 0 & blockGrid[i - xPos][j - yPos] != 0) {
+                        collide = true;
                         break a;
                     }
-                    if (blockGrid[i - xPos][j - yPos] == 1 & i <= lBound) {
-                        colide = true;
+                    if (blockGrid[i - xPos][j - yPos] != 0 & i <= lBound) {
+                        collide = true;
                         break a;
                     }
                 }
                 if (yMove == 1) {
-                    if (blockGrid[i - xPos][j - yPos] == 1 & j >= floorBound) {
-                        colide = true;
+                    if (blockGrid[i - xPos][j - yPos] != 0 & j >= floorBound) {
+                        collide = true;
                         blockIsDoneFalling();
                         break a;
                     }
                 }
-                if (frozenPiecesGrid[i][j + 1] == 1 & blockGrid[i - xPos][j - yPos] == 1) {
-                    colide = true;
+                if (frozenPiecesGrid[i][j + 1] != 0 & blockGrid[i - xPos][j - yPos] != 0) {
+                    collide = true;
                     blockIsDoneFalling();
                     break a;
                 }
             }
         }
-        if (!colide) {
+        if (!collide) {
             xPos += xMove;
             yPos += yMove;
             mergeGrids();
@@ -88,11 +87,11 @@ public class Grid {
                 for (int j = tempYPos; j < tempYPos + blockGrid.length; j++) {
                     //System.out.print("(i" + i + "," + j + ")");
                     //System.out.print(projectionScanDone);
-                    if (frozenPiecesGrid[i][j + 1] == 1 & blockGrid[i - xPos][j - tempYPos] == 1) {
+                    if (frozenPiecesGrid[i][j + 1] != 0 & blockGrid[i - xPos][j - tempYPos] != 0) {
                         projectionScanDone = true;
                         break b;
                     }
-                    if (blockGrid[i - xPos][j - tempYPos] == 1 & j >= floorBound) {
+                    if (blockGrid[i - xPos][j - tempYPos] != 0 & j >= floorBound) {
                         projectionScanDone = true;
                         break b;
                     }
@@ -103,25 +102,89 @@ public class Grid {
         if (projectionScanDone) {
             for (int i = xPos; i < xPos + blockGrid.length; i++) {
                 for (int j = tempYPos; j < tempYPos + blockGrid.length; j++) {
-                    if (blockGrid[i - xPos][j - tempYPos] == 1) grid[i][j] = 2;
+                    if (blockGrid[i - xPos][j - tempYPos] != 0) grid[i][j] = 5;
                 }
             }
         }
     }
 
+    void completeLineCheck() {
+        for (int j = 25; j > 3; j--) {
+            boolean lineComplete = true;
+            for (int i = lBound; i <= rBound; i++) {
+                if (frozenPiecesGrid[i][j] == 0) {
+                    lineComplete = false;
+                }
+            }
+            if (lineComplete) {
+                removeLine(j);
+            }
+        }
+    }
+
+    void rotate() {
+        int[][] newPieceArray =
+                new int[blockGrid.length][blockGrid[0].length];
+        int columnForNew = blockGrid.length - 1;
+        int rowForNew = 0;
+        for (int[] ints : blockGrid) {
+            for (int anInt : ints) {
+                newPieceArray[rowForNew][columnForNew] = anInt;
+                rowForNew++;
+                if (rowForNew == blockGrid.length)
+                    rowForNew = 0;
+            }
+            columnForNew--;
+        }
+
+
+        collide = false;
+        boolean outOfBounds = true;
+        int tempX = xPos;
+        for (int k = 0; k < 8; k++) {
+            collide = false;
+            outOfBounds = false;
+            e:
+            for (int i = tempX; i < tempX + blockGrid.length; i++) {
+                for (int j = yPos; j < yPos + blockGrid.length; j++) {
+                    if (frozenPiecesGrid[i][j] != 0 & newPieceArray[i - tempX][j - yPos] != 0) {
+                        collide = true;
+                    }
+
+                    if (newPieceArray[i - tempX][j - yPos] != 0) {
+                        if (i > rBound) {
+                            outOfBounds = true;
+                            tempX--;
+                            break e;
+                        }
+                        if (i < lBound) {
+                            outOfBounds = true;
+                            tempX++;
+                            break e;
+                        }
+                    }
+                }
+            }
+            if (!outOfBounds & !collide) {
+                xPos = tempX;
+                break;
+            }
+        }
+        if (!collide) blockGrid = newPieceArray;
+    }
+
     private void blockIsDoneFalling() {
-        colide = false;
+        collide = false;
         for (int i = xPos; i < xPos + blockGrid.length; i++) {
             for (int j = yPos; j < yPos + blockGrid.length; j++) {
-                if (blockGrid[i - xPos][j - yPos] == 1) {
+                if (blockGrid[i - xPos][j - yPos] != 0) {
                     frozenPiecesGrid[i][j] = blockGrid[i - xPos][j - yPos];
                 }
             }
         }
         Blocks block = new Blocks();
         xPos = (lBound + rBound) / 2;
-        ;
-        yPos = 1;
+        yPos = 0;
         blockGrid = block.generateAblock();
     }
 
@@ -133,7 +196,7 @@ public class Grid {
         }
         for (int i = xPos; i < xPos + blockGrid.length; i++) {
             for (int j = yPos; j < yPos + blockGrid.length; j++)
-                if (blockGrid[i - xPos][j - yPos] == 1) grid[i][j] =
+                if (blockGrid[i - xPos][j - yPos] != 0) grid[i][j] =
                         blockGrid[i - xPos][j - yPos];
         }
     }
@@ -142,20 +205,6 @@ public class Grid {
         for (int i = 0; i < grid.length - 1; i++) {
             for (int j = 0; j < grid[i].length - 1; j++) {
                 grid[i][j] = 0;
-            }
-        }
-    }
-
-    public void completeLineCheck() {
-        for (int j = 25; j > 3; j--) {
-            boolean lineComplete = true;
-            for (int i = lBound; i <= rBound; i++) {
-                if (frozenPiecesGrid[i][j] == 0) {
-                    lineComplete = false;
-                }
-            }
-            if (lineComplete) {
-                removeLine(j);
             }
         }
     }
@@ -183,55 +232,5 @@ public class Grid {
     }
 
 
-    public void rotate() {
-        int[][] newPieceArray =
-                new int[blockGrid.length][blockGrid[0].length];
-        int columnForNew = blockGrid.length - 1;
-        int rowForNew = 0;
-        for (int[] ints : blockGrid) {
-            for (int anInt : ints) {
-                newPieceArray[rowForNew][columnForNew] = anInt;
-                rowForNew++;
-                if (rowForNew == blockGrid.length)
-                    rowForNew = 0;
-            }
-            columnForNew--;
-        }
-
-
-        colide = false;
-        boolean outOfBounds = true;
-        int tempX = xPos;
-        for (int k = 0; k < 8; k++) {
-            colide = false;
-            outOfBounds = false;
-            e:
-            for (int i = tempX; i < tempX + blockGrid.length; i++) {
-                for (int j = yPos; j < yPos + blockGrid.length; j++) {
-                    if (frozenPiecesGrid[i][j] == 1 & newPieceArray[i - tempX][j - yPos] == 1) {
-                        colide = true;
-                    }
-
-                    if (newPieceArray[i - tempX][j - yPos] == 1) {
-                        if (i > rBound) {
-                            outOfBounds = true;
-                            tempX--;
-                            break e;
-                        }
-                        if (i < lBound) {
-                            outOfBounds = true;
-                            tempX++;
-                            break e;
-                        }
-                    }
-                }
-            }
-            if (!outOfBounds & !colide) {
-                xPos = tempX;
-                break;
-            }
-        }
-        if (!colide) blockGrid = newPieceArray;
-    }
 
 }
