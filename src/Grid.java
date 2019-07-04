@@ -2,9 +2,10 @@ public class Grid {
     int lBound = 5;
     int rBound = 13;
     int floorBound = 21;
-    private int[][] frozenPiecesGrid;
+    int[][] frozenPiecesGrid;
     private int[][] grid;
     private int[][] blockGrid;
+    private int[][] swap= new int[4][4];
     private boolean collide = false;
     private int xPos = (lBound + rBound) / 2;
     private int yPos = 0;
@@ -16,11 +17,23 @@ public class Grid {
         arrayInitializer(grid);
         arrayInitializer(frozenPiecesGrid);
         arrayInitializer(blockGrid);
+        arrayInitializer(swap);
     }
 
     void startGame() {
         Blocks block = new Blocks();
         blockGrid = block.generateAblock();
+        swap = block.generateAblock();
+    }
+
+    void swap() {
+        int[][] temp = blockGrid;
+        blockGrid = swap;
+        swap = temp;
+    }
+
+    int[][] getSwap(){
+        return swap;
     }
 
     void move(int xMove, int yMove) {
@@ -108,20 +121,6 @@ public class Grid {
         }
     }
 
-    void completeLineCheck() {
-        for (int j = 25; j > 3; j--) {
-            boolean lineComplete = true;
-            for (int i = lBound; i <= rBound; i++) {
-                if (frozenPiecesGrid[i][j] == 0) {
-                    lineComplete = false;
-                }
-            }
-            if (lineComplete) {
-                removeLine(j);
-            }
-        }
-    }
-
     void rotate() {
         int[][] newPieceArray =
                 new int[blockGrid.length][blockGrid[0].length];
@@ -185,7 +184,8 @@ public class Grid {
         Blocks block = new Blocks();
         xPos = (lBound + rBound) / 2;
         yPos = 0;
-        blockGrid = block.generateAblock();
+        swap();
+        swap = block.generateAblock();
     }
 
     private void mergeGrids() {
@@ -208,29 +208,6 @@ public class Grid {
             }
         }
     }
-
-    private void removeLine(int completedLineAt) {
-        //removes completed line
-        for (int i = lBound; i <= rBound; i++) {
-            frozenPiecesGrid[i][completedLineAt] = 0;
-        }
-
-        try {
-            Thread.sleep(700);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        //moves all blocks down
-
-        for (int i = lBound; i <= rBound; i++) {
-            for (int j = completedLineAt; j > 3; j--) {
-                frozenPiecesGrid[i][j] = frozenPiecesGrid[i][j - 1];
-                frozenPiecesGrid[i][j - 1] = 0;
-            }
-        }
-    }
-
 
 
 }

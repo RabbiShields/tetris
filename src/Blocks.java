@@ -19,7 +19,7 @@ public class Blocks {
 
         //color chooser
         Random c = new Random();
-        int color = c.nextInt(3)+1;
+        int color = c.nextInt(4)+1; //color = 0 is black
 
         //block chooser
         Random r = new Random();
