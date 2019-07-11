@@ -14,6 +14,7 @@ public class Blocks {
     public Blocks() {
     }
 
+
     public int[][] generateAblock() {
         int[][] newBlock = new int[blockSize][blockSize];
 
@@ -23,7 +24,8 @@ public class Blocks {
 
         //block chooser
         Random r = new Random();
-        int which = r.nextInt(4);
+        int which = 3;
+                //r.nextInt(4);
         System.out.println(" ");
         System.out.print(which + "number");
         switch (which) {
@@ -44,13 +46,16 @@ public class Blocks {
     }
 
     private int[][] blockMaker(int color, boolean[][] tempBlock) {
-        int[][] newBlock = new int[blockSize][blockSize];
-        for (int i = 0; i < blockSize; i++) {
-            for (int j = 0; j < blockSize; j++) {
-                if (tempBlock[i][j]) newBlock[i][j] = color;
-                if (!tempBlock[i][j]) newBlock[i][j] = 0;
+
+            int[][] newBlock = new int[blockSize][blockSize];
+            for (int i = 0; i < blockSize; i++) {
+                for (int j = 0; j < blockSize; j++) {
+                    if (tempBlock[i][j]) newBlock[i][j] = color;
+                    if (!tempBlock[i][j]) newBlock[i][j] = 0;
+                }
             }
-        }
+
+
         return newBlock;
     }
 

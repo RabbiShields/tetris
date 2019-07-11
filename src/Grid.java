@@ -3,12 +3,13 @@ public class Grid {
     int rBound = 13;
     int floorBound = 21;
     int[][] frozenPiecesGrid;
-    private int[][] grid;
-    private int[][] blockGrid;
-    private int[][] swap= new int[4][4];
+    int[][] grid;
+    int[][] blockGrid;
+    int[][] swap = new int[4][4];
     private boolean collide = false;
-    private int xPos = (lBound + rBound) / 2;
-    private int yPos = 0;
+    int xPos = (lBound + rBound) / 2;
+    int yPos = 0;
+    boolean gameInPlay = true;
 
     Grid() {
         grid = new int[30][35];
@@ -23,7 +24,8 @@ public class Grid {
     void startGame() {
         Blocks block = new Blocks();
         blockGrid = block.generateAblock();
-        swap = block.generateAblock();
+        Blocks blocks = new Blocks();
+        swap = blocks.generateAblock();
     }
 
     void swap() {
@@ -32,7 +34,7 @@ public class Grid {
         swap = temp;
     }
 
-    int[][] getSwap(){
+    int[][] getSwap() {
         return swap;
     }
 
@@ -88,10 +90,14 @@ public class Grid {
         return grid;
     }
 
+    int getBlockGridLength() {
+        return blockGrid.length;
+    }
+
     //projects a where a falling piece will land
     // makes a tempYPos and checks if that fake y position will cause a
 // collition keeps adding one to that Y Pos to see if it collides.
-    void pieceProjection() {
+    void dropOrPieceProjection(boolean dropPiece) {
         boolean projectionScanDone = false;
         int tempYPos = yPos;
         while (!projectionScanDone) {
@@ -115,8 +121,20 @@ public class Grid {
         if (projectionScanDone) {
             for (int i = xPos; i < xPos + blockGrid.length; i++) {
                 for (int j = tempYPos; j < tempYPos + blockGrid.length; j++) {
-                    if (blockGrid[i - xPos][j - tempYPos] != 0) grid[i][j] = 5;
+                    if (dropPiece)
+                        if (blockGrid[i - xPos][j - tempYPos] != 0)
+                            frozenPiecesGrid[i][j] = blockGrid[i - xPos][j - tempYPos];
+                    if (!dropPiece)
+                        if (blockGrid[i - xPos][j - tempYPos] != 0 & grid[i][j] == 0)
+                            grid[i][j] = 5;
                 }
+            }
+            if (dropPiece & gameInPlay) {
+                Blocks block = new Blocks();
+                xPos = (lBound + rBound) / 2;
+                yPos = 0;
+                swap();
+                swap = block.generateAblock();
             }
         }
     }
@@ -181,14 +199,16 @@ public class Grid {
                 }
             }
         }
+        if (gameInPlay){
         Blocks block = new Blocks();
         xPos = (lBound + rBound) / 2;
         yPos = 0;
         swap();
         swap = block.generateAblock();
+        }
     }
 
-    private void mergeGrids() {
+    void mergeGrids() {
         for (int i = 0; i < grid.length - 1; i++) {
             for (int j = 0; j < grid[i].length - 1; j++) {
                 grid[i][j] = frozenPiecesGrid[i][j];
